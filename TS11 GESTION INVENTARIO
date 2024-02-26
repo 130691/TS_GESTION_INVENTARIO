@@ -1,0 +1,68 @@
+import json
+
+# Definimos la clase Producto
+class Producto:
+    # El método __init__ es el constructor de la clase
+    def __init__(self, id, nombre, cantidad, precio):
+        # Estos son los atributos de la clase
+        self.id = id
+        self.nombre = nombre
+        self.cantidad = cantidad
+        self.precio = precio
+
+    # Este método devuelve la información del producto
+    def get_info(self):
+        return self.id, self.nombre, self.cantidad, self.precio
+
+# Definimos la clase Inventario
+class Inventario:
+    # El método __init__ es el constructor de la clase
+    def __init__(self):
+        # Este diccionario almacenará los productos por su ID
+        self.productos = {}
+
+    # Este método añade un producto al inventario
+    def añadir_producto(self, id, nombre, cantidad, precio):
+        if id not in self.productos:
+            self.productos[id] = Producto(id, nombre, cantidad, precio)
+        else:
+            print("El producto ya existe en el inventario.")
+
+    # Este método elimina un producto del inventario
+    def eliminar_producto(self, id):
+        if id in self.productos:
+            del self.productos[id]
+        else:
+            print("El producto no existe en el inventario.")
+
+    # Este método actualiza la cantidad o el precio de un producto
+    def actualizar_producto(self, id, cantidad=None, precio=None):
+        if id in self.productos:
+            if cantidad:
+                self.productos[id].cantidad = cantidad
+            if precio:
+                self.productos[id].precio = precio
+        else:
+            print("El producto no existe en el inventario.")
+
+    # Este método busca un producto por su nombre
+    def buscar_producto(self, nombre):
+        for producto in self.productos.values():
+            if producto.nombre == nombre:
+                return producto.get_info()
+        return "El producto no existe en el inventario."
+
+    # Este método muestra todos los productos del inventario
+    def mostrar_productos(self):
+        for producto in self.productos.values():
+            print(producto.get_info())
+
+    # Este método guarda el inventario en un archivo
+    def guardar_inventario(self, archivo):
+        with open(archivo, 'w') as f:
+            json.dump(self.productos, f, default=lambda o: o.__dict__)
+
+    # Este método carga el inventario desde un archivo
+    def cargar_inventario(self, archivo):
+        with open(archivo, 'r') as f:
+            self.productos = json.load(f)
